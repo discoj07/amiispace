@@ -4,11 +4,12 @@ from django.db import models
 ## A generic card. Think about this like a catalog of existing prints.
 class Card(models.Model):
 	character = models.CharField(max_length=10)
+	number = models.CharField(max_length=5, default=0)
 	series = models.CharField(max_length=5)
 	version = models.CharField(max_length=5)
 
 	def __str__(self):
-		return "{0} {1} {2}".format(self.series, self.character, self.version)
+		return "{0} {1} {2} {3}".format(self.series, self.number, self.character, self.version)
 
 ## A card that a user currently owns.
 class MyCard(models.Model):

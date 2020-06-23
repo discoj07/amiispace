@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 
+from amiispace_app.forms import MyCardForm
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the amiispace index.")
+	form = MyCardForm(request.POST)
+	context = {'form': form}
+	return render(request, 'amiispace_app/index.html', context)

@@ -45,8 +45,8 @@ class MyCard(models.Model):
 		(POOR, 'Poor')
 	]
 
-	owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-	card = models.ForeignKey(Card, on_delete=models.CASCADE)
-	quality = models.CharField(max_length=5, choices=QUALITY_CHOICES, default=NEW)
+	owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True)
+	card = models.ForeignKey(Card, on_delete=models.CASCADE, blank=True)
+	quality = models.CharField(max_length=5, choices=QUALITY_CHOICES, default=NEW, blank=True)
 	bought_price = models.PositiveIntegerField(blank=True)
 	selling_price = models.PositiveIntegerField(blank=True)

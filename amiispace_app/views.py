@@ -1,8 +1,12 @@
 from django.contrib.auth import get_user_model 
 from django.shortcuts import render, redirect
 
-from amiispace_app.forms import MyCardForm, NewCardForm
+from amiispace_app.forms import (MyCardForm, 
+								NewCardForm,
+								SignupForm)
 from amiispace_app.models import MyCard, Card
+
+
 
 def index(request):
 	""" Add cards view. """
@@ -26,3 +30,19 @@ def index(request):
 		form = NewCardForm()
 		context['form'] = form
 	return render(request, 'amiispace_app/index.html', context)
+
+def signup_view(request):
+	context = {}
+	if request.method == 'POST':
+		form = SignupForm(request.POST)
+		print("post")
+		if form.is_valid():
+			form.save(commit=True)
+			return redirect('/amiispace_app/index')
+		else:
+			context['form'] = form
+			return render(request, 'amiispace_app/signup.html', context)
+	else:
+		form = SignupForm()
+		context['form'] = form
+	return render(request, 'amiispace_app/signup.html', context)

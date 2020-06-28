@@ -1,3 +1,6 @@
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from django.core.validators import validate_email
 from django.db import models
 from django import forms
 from .models import Card, MyCard
@@ -15,7 +18,7 @@ class NewCardForm(forms.Form):
 			ex. 170 NA
 				Ruby NA
 			Returns list of tuples i.e. [('Fang', 'NA'), ('Kabuki', 'EU')] """
-		data = self.cleaned_data['bulk_field']
+		data = self.cleaned_data.get('bulk_field')
 		cards = data.split('\r\n')
 		fcards = [card.strip() for card in cards]
 
@@ -41,3 +44,27 @@ class NewCardForm(forms.Form):
 			fcards[i] = (exists.first().character, version)
 
 		return fcards
+
+class SignupForm(UserCreationForm):
+	blocked_permissions = [
+	]
+	class Meta:
+		model = User
+		fields = ['username', 'email', 'password1', 'password2']
+
+	def clean_email(self):
+		email = self.cleaned_data.get('email')
+		validate_email(email)
+		if User.objects.filter(email=email).exists():
+			raise forms.ValidationError("An account with the same e-mail exists already.")
+		return email
+
+	def save(self, commit):
+		""" Saves a user as inactive if commit is False. This is to ensure user
+			has validated their email. """
+		user = super().save(commit=False)
+		user.is_active = False
+		if commit:
+			user.is_active = True
+			user.save()
+		return user

@@ -1,9 +1,10 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.core.validators import validate_email
 from django.db import models
 from django import forms
 from .models import Card, MyCard
+
+from email_validator import validate_email, EmailNotValidError
 
 class MyCardForm(forms.ModelForm):
 	class Meta:
@@ -53,18 +54,18 @@ class SignupForm(UserCreationForm):
 		fields = ['username', 'email', 'password1', 'password2']
 
 	def clean_email(self):
+		""" Ensures domain of email exists and is unique. Returns normalized email."""
 		email = self.cleaned_data.get('email')
-		validate_email(email)
+
+		# Ensures domain name exists and can be resolved.
+		try:
+			valid = validate_email(email)
+			email = valid.email
+		except EmailNotValidError as e:
+			raise forms.ValidationError(str(e))
+
+		# Ensures email is unique.
 		if User.objects.filter(email=email).exists():
 			raise forms.ValidationError("An account with the same e-mail exists already.")
+		
 		return email
-
-	def save(self, commit):
-		""" Saves a user as inactive if commit is False. This is to ensure user
-			has validated their email. """
-		user = super().save(commit=False)
-		user.is_active = False
-		if commit:
-			user.is_active = True
-			user.save()
-		return user

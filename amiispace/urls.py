@@ -15,8 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django_email_verification import urls as mail_urls
 
 urlpatterns = [
 	path('amiispace_app/', include('amiispace_app.urls')),
     path('admin/', admin.site.urls),
+    path('email/', include(mail_urls))
 ]

@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model 
+from django_email_verification import sendConfirm
 from django.shortcuts import render, redirect
 
 from amiispace_app.forms import (MyCardForm, 
@@ -6,9 +7,7 @@ from amiispace_app.forms import (MyCardForm,
 								SignupForm)
 from amiispace_app.models import MyCard, Card
 
-
-
-def index(request):
+def add_cards_view(request):
 	""" Add cards view. """
 	context = {}
 	if request.method == 'POST':
@@ -35,9 +34,9 @@ def signup_view(request):
 	context = {}
 	if request.method == 'POST':
 		form = SignupForm(request.POST)
-		print("post")
 		if form.is_valid():
-			form.save(commit=True)
+			user = form.save(commit=True)
+			sendConfirm(user)
 			return redirect('/amiispace_app/index')
 		else:
 			context['form'] = form

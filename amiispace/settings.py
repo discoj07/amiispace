@@ -37,7 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'amiispace_app'
+    'amiispace_app',
+
+    # third-party apps
+    'django_email_verification'
 ]
 
 MIDDLEWARE = [
@@ -118,3 +121,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Django email validator parameters
+EMAIL_ACTIVE_FIELD = 'is_active'
+EMAIL_SERVER = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_ADDRESS = 'amiispaceverify@gmail.com'
+EMAIL_PASSWORD = os.environ['amiispace_password']
+EMAIL_MAIL_SUBJECT = 'One step away from your verifying your Amiispace account!'
+EMAIL_MAIL_HTML = 'email_validation/mail_body.html'
+EMAIL_MAIL_PLAIN = 'email_validation/mail_body.txt'
+EMAIL_PAGE_TEMPLATE = 'email_validation/confirm_template.html'
+EMAIL_PAGE_DOMAIN = 'http://127.0.0.1:8000/'
